@@ -11,7 +11,7 @@ python3-gi
 # 无参数表示正常日历，有菜单栏和任务栏
 python3 xflunar.py
 
-# 有参数表示传统模式，没有菜单栏和任务栏
+# 有参数表示传统模式，没有菜单栏和任务栏，Wayland下目前只能居中，其他位置暂未适配。
 python3 xflunar.py bottomright # 位置右下
 python3 xflunar.py upperright  # 位置右上
 python3 xflunar.py upperleft   # 位置左上

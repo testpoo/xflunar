@@ -21,6 +21,8 @@ class Calendar:
         if len(sys.argv) == 1:
             self.window.set_position(Gtk.WindowPosition.CENTER)  # 窗口居中
             self.window.set_icon_from_file(os.path.join(os.path.dirname(os.path.abspath(__file__)),"calendar.svg"))
+            #self.window.set_icon_name("x-office-calendar-symbolic")
+
         else:
             self.window.set_decorated(False)  # 禁用窗口装饰（无标题栏、无任务栏图标关联）
             self.window.set_skip_taskbar_hint(True)  # 告诉系统：跳过任务栏显示

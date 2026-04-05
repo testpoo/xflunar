@@ -157,8 +157,8 @@ class Calendar:
         for i in range(len(self.cday)):
             m,n = divmod(i,7)
             # 创建日期按钮
-            if self.cday[i].split('\n')[0] == str(datetime.now().day) and self.current_date.month == datetime.now().month and self.current_date.year == datetime.now().year:
-                btn = Gtk.Button(label=str(self.cday[i]))
+            if self.cday[i].split('\n')[0].strip("♪♫") == str(datetime.now().day) and self.current_date.month == datetime.now().month and self.current_date.year == datetime.now().year:
+                btn = Gtk.Button(label=str(self.cday[i].strip("♪♫")))
                 btn.set_name("today")
             elif self.cday[i][0] == '♩':
                 btn = Gtk.Button(label=str(self.cday[i][1:]))

@@ -249,8 +249,13 @@ def show_month(year, month, day):
     else:
         tm_month = str(tm.month)
 
+    if tm.day < 10:
+        tm_day = "0" + str(tm.day)
+    else:
+        tm_day = str(tm.day)
+
     (year, month, day) = get_ludar_date(tm)
-    cdate = "".join((str(tm.year),"年",tm_month,"月",str(tm.day),"日"," ",str(week_str(tm))))
+    cdate = "".join((str(tm.year),"年",tm_month,"月",str(tm_day),"日"," ",str(week_str(tm))))
     clunar = "".join((lunar_year(year),"年"," ",change_year(year),"年",lunar_month(month),lunar_day(day))) # 根据数组索引确定
     cweek = ("一","二","三","四","五","六","日")
 

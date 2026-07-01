@@ -11,6 +11,17 @@ Gtk.Settings.get_default().set_property('gtk-icon-theme-name','Adwaita')
 
 class Calendar:
     def __init__(self):
+        if os.environ.get("XDG_SESSION_TYPE", "").strip().lower() == "x11":
+            scale = int(os.popen("xrdb -query | grep Xft.dpi").read().split("\t")[1][:-1])/96
+        else:
+            scale = 1
+        self.width = 330*scale
+        self.height = 350*scale
+        self.grid = 50*scale
+        self.font_size = 12*scale
+        self.padding = 10*scale
+        self.border = 2*scale
+
         # 初始化当前日期
         self.current_date = date.today()
         self.selected_date = self.current_date
@@ -18,7 +29,7 @@ class Calendar:
 
         # 创建主窗口
         self.window = Gtk.Window(title="日历")
-        self.window.set_default_size(330, 350)
+        self.window.set_default_size(self.width, self.height)
         self.window.connect("destroy", Gtk.main_quit)
 
         if len(sys.argv) == 1:
@@ -72,14 +83,14 @@ class Calendar:
         self.prev_year_button.connect("clicked", self.on_prev_year_clicked)
         self.prev_year_button.get_style_context().add_class('flat')
         self.button_box.pack_start(self.prev_year_button, False, False, 0)
-        self.prev_year_button.set_size_request(50, 40)
+        self.prev_year_button.set_size_request(self.grid, self.grid-10)
 
         # 年份
         self.year_label = Gtk.Label(label=str(self.current_date.year))
         self.year_label.set_name("year_label")
         self.year_label.set_justify(Gtk.Justification.CENTER)
         self.button_box.pack_start(self.year_label, True, True, 0)
-        self.year_label.set_size_request(50, 40)
+        self.year_label.set_size_request(self.grid, self.grid-10)
 
         # 下一年按钮
         self.next_year_button = Gtk.Button(label="▶")
@@ -87,7 +98,7 @@ class Calendar:
         self.next_year_button.connect("clicked", self.on_next_year_clicked)
         self.next_year_button.get_style_context().add_class('flat')
         self.button_box.pack_start(self.next_year_button, False, False, 0)
-        self.next_year_button.set_size_request(50, 40)
+        self.next_year_button.set_size_request(self.grid, self.grid-10)
 
         # 上一个月按钮
         self.prev_month_button = Gtk.Button(label="◀")
@@ -95,14 +106,14 @@ class Calendar:
         self.prev_month_button.connect("clicked", self.on_prev_month_clicked)
         self.prev_month_button.get_style_context().add_class('flat')
         self.button_box.pack_start(self.prev_month_button, False, False, 0)
-        self.prev_month_button.set_size_request(50, 40)
+        self.prev_month_button.set_size_request(self.grid, self.grid-10)
 
         # 月份
         self.month_label = Gtk.Label(label=str(self.current_date.month))
         self.month_label.set_name("month_label")
         self.month_label.set_justify(Gtk.Justification.CENTER)
         self.button_box.pack_start(self.month_label, True, True, 0)
-        self.month_label.set_size_request(50, 40)
+        self.month_label.set_size_request(self.grid, self.grid-10)
 
         # 下一个月按钮
         self.next_month_button = Gtk.Button(label="▶")
@@ -110,7 +121,7 @@ class Calendar:
         self.next_month_button.connect("clicked", self.on_next_month_clicked)
         self.next_month_button.get_style_context().add_class('flat')
         self.button_box.pack_start(self.next_month_button, False, False, 0)
-        self.next_month_button.set_size_request(50, 40)
+        self.next_month_button.set_size_request(self.grid, self.grid-10)
 
         # 今天按钮
         self.today_button = Gtk.Button(label="今天")
@@ -118,7 +129,7 @@ class Calendar:
         self.today_button.connect("clicked", self.on_today_clicked)
         self.today_button.get_style_context().add_class('flat')
         self.button_box.pack_start(self.today_button, False, False, 0)
-        self.today_button.set_size_request(50, 40)
+        self.today_button.set_size_request(self.grid, self.grid-10)
 
         # 创建日历网格
         self.create_calendar_grid(self.cday)
@@ -147,7 +158,7 @@ class Calendar:
             label.set_valign(Gtk.Align.CENTER)
             label.set_name("weekday-label")
             self.calendar_grid.attach(label, i, 0, 1, 1)
-            label.set_size_request(50, 30)
+            label.set_size_request(self.grid, self.grid-20)
 
         # 获取当前月份数据
         year = self.current_date.year
@@ -187,7 +198,7 @@ class Calendar:
             btn.get_style_context().add_class('flat')
             btn.set_halign(Gtk.Align.CENTER)
             btn.set_valign(Gtk.Align.CENTER)
-            btn.set_size_request(50, 50)
+            btn.set_size_request(self.grid, self.grid)
 
             # 标记选中的日期
             if (self.selected_date.year == year and
@@ -199,45 +210,45 @@ class Calendar:
 
         # 应用CSS样式
         css_provider = Gtk.CssProvider()
-        css = """
-            #main_box {
-                padding: 10px;
-            }
-            #label_box {
-                padding: 10px;
-                border-bottom: 2px solid #ddd;
-            }
-            #weekday-label {
+        css = f"""
+            #main_box {{
+                padding: {self.padding}px;
+            }}
+            #label_box {{
+                padding: {self.padding}px;
+                border-bottom: {self.border}px solid #ddd;
+            }}
+            #weekday-label {{
                 font-weight: bold;
-            }
-            #next_month,#pre_month {
+            }}
+            #next_month,#pre_month {{
                 color: #a8a8a8;
-            }
-            #festival {
+            }}
+            #festival {{
                 color: #e7493e;
-            }
-            #solarterms {
+            }}
+            #solarterms {{
                 color: #0078d7;
-            }
-            #today {
+            }}
+            #today {{
                 color: white;
                 background: #0078d7;
                 font-weight: bold;
-            }
-            .selected {
+            }}
+            .selected {{
                 background-color: #a8d1ff;
-            }
-            button,label {
-                font-size: 12px;
+            }}
+            button,label {{
+                font-size: {self.font_size}px;
                 padding: 0px;
-            }
-            button:focus {
+            }}
+            button:focus {{
                 outline: none;
-            }
-            #lunar_label, #date_label {
+            }}
+            #lunar_label, #date_label {{
                 color: #0078d7;
                 font-weight: bold;
-            }
+            }}
         """
         css_provider.load_from_data(css.encode())
         Gtk.StyleContext.add_provider_for_screen(

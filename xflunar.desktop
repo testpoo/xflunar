@@ -1,0 +1,12 @@
+[Desktop Entry]
+Name=xflunar
+Name[zh_CN]=日历
+Exec=/opt/xflunar/xflunar.py
+StartupNotify=true
+Terminal=false
+Icon=x-office-calendar-symbolic
+Type=Application
+Categories=Utility;
+Comment=PooMusic Plyaer
+Comment[zh_CN]=农历日历
+Path=

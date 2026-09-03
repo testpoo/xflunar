@@ -32,19 +32,9 @@ class Calendar:
         self.window.set_default_size(self.width, self.height)
         self.window.connect("destroy", Gtk.main_quit)
 
-        if len(sys.argv) == 1:
-            self.window.set_position(Gtk.WindowPosition.CENTER)  # 窗口居中
-            #self.window.set_icon_from_file(os.path.join(os.path.dirname(os.path.abspath(__file__)),"calendar.svg"))
-            self.window.set_icon_name("x-office-calendar-symbolic")
-
-        else:
-            self.window.set_decorated(False)  # 禁用窗口装饰（无标题栏、无任务栏图标关联）
-            self.window.set_skip_taskbar_hint(True)  # 告诉系统：跳过任务栏显示
-            self.window.set_skip_pager_hint(True)    # 告诉系统：跳过 Alt+Tab 切换列表（可选）
-            self.move_to_location(sys.argv[1])  # 窗口居右下角
-
-        self.window.connect("focus-out-event", self.on_focus_lost)  # 监听「失去焦点」信号，触发关闭程序
-        self.window.connect("key-press-event", self.on_key_press)  # 绑定键盘按下事件，监听 ESC 键
+        self.window.set_position(Gtk.WindowPosition.CENTER)  # 窗口居中
+        #self.window.set_icon_from_file(os.path.join(os.path.dirname(os.path.abspath(__file__)),"calendar.svg"))
+        self.window.set_icon_name("x-office-calendar-symbolic")
 
         # 创建主布局
         self.main_box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=0)
@@ -310,44 +300,6 @@ class Calendar:
         self.selected_date = date(year, month, day)
         self.cday = show_month(self.current_date.year, self.current_date.month, self.current_date.day)[-1]
         self.create_calendar_grid(self.cday)
-
-    def move_to_location(self, location):
-        # 获取屏幕可用区域（排除任务栏/Dock，避免窗口被遮挡）
-        display = Gdk.Display.get_default()
-        monitor = display.get_primary_monitor()
-        monitor_workarea = monitor.get_workarea()  # 直接获取可用区域
-
-        # 获取窗口尺寸（默认大小或当前大小）
-        window_width = self.window.get_default_size()[0]
-        window_height = self.window.get_default_size()[1]
-
-        # 计算坐标：
-        x = monitor_workarea.width - window_width
-        y = monitor_workarea.height - window_height
-
-        # 移动窗口到计算后的坐标
-        if location == 'bottomright':
-            self.window.move(x, y)
-        elif location == "upperright":
-            self.window.move(x, 0)
-        elif location == "bottomleft":
-            self.window.move(0, y)
-        elif location == "upperleft":
-            self.window.move(0, 0)
-        else:
-            self.window.set_position(Gtk.WindowPosition.CENTER)
-
-    def on_focus_lost(self, widget, event):
-        """失去焦点时的回调函数：关闭程序"""
-        Gtk.main_quit()  # 退出 GTK 主循环，关闭程序
-
-    def on_key_press(self, widget, event):
-        """监听键盘按下事件，ESC 键退出"""
-        # 判断按下的键是否为 ESC 键（Gdk.KEY_Escape 是 ESC 键的枚举值）
-        if event.keyval == Gdk.KEY_Escape:
-            Gtk.main_quit()
-            return True  # 返回 True 表示事件已处理，不再传递
-        return False  # 其他键不处理，继续传递
 
 if __name__ == "__main__":
     app = Calendar()
